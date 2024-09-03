@@ -1,12 +1,25 @@
 import Head from "next/head";
 import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
+import styles from "@/src/styles/Home.module.css";
 import Header from "@/src/components/Molecoles/Header/Header";
 import WindowBox from "@/src/components/Organism/WindowBox";
+import InputBox from "@/src/components/Molecoles/InputBox/InputBox";
+import SelectBox from "@/src/components/Molecoles/SelectBox/SelectBox";
+import { useState } from "react";
+import { listaGeneri } from "@/src/constants/common";
+import Button from "@/src/components/Atoms/Button/Button";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+	const [protagonista, setProtagonista] = useState("");
+	const [antagonista, setAntagonista] = useState("");
+	const [genere, setGenere] = useState("");
+
+	const handleGenerate = () => {
+		console.log({ protagonista, antagonista, genere });
+	};
+
 	return (
 		<>
 			<Head>
@@ -18,7 +31,36 @@ export default function Home() {
 			<main className={`${styles.main} ${inter.className}`}>
 				<Header title="AI Story Teller" />
 				<div className={styles.content}>
-					<WindowBox title="Story Params" />
+					<WindowBox title="Story Params">
+						<div className={styles.container}>
+							<InputBox
+								label="Nome Protagonista:"
+								value={protagonista}
+								setValue={setProtagonista}
+							/>
+							<InputBox
+								label="Nome Antagonista:"
+								value={antagonista}
+								setValue={setAntagonista}
+							/>
+						</div>
+						<div className={styles.container}>
+							<SelectBox
+								label="Genere:"
+								list={listaGeneri}
+								setAction={setGenere}
+							/>
+						</div>
+						<Button
+							label="Genera"
+							onClick={handleGenerate}
+							disabled={
+								protagonista.trim().length <= 0 ||
+								antagonista.trim().length <= 0 ||
+								genere.trim().length <= 0
+							}
+						/>
+					</WindowBox>
 				</div>
 			</main>
 		</>
