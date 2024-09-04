@@ -1,0 +1,18 @@
+.main {
+	min-height: 100vh;
+
+	.content {
+		padding: 20px 0;
+
+		.container {
+			display: flex;
+			gap: 20px;
+		}
+
+		.result {
+			@include window-style(100%);
+			margin-top: rem(20px);
+			box-shadow: none;
+		}
+	}
+}

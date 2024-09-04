@@ -1,14 +1,19 @@
+import { ReactNode } from "react";
+import style from "./WindowBox.module.scss";
+
 interface WindowBoxProps {
 	title?: string;
-	children?: React.ReactNode;
+	children: ReactNode;
 }
 
-const WindowBox: React.FC<WindowBoxProps> = ({ title, children }) => (
-    <div className="window-box">
-        <h2>{title}</h2>
-        <div className="content">{children}</div>
-    </div>
-);
-
+const WindowBox = (props: WindowBoxProps) => {
+	const { title, children } = props;
+	return (
+		<div className={style.main}>
+			{title && <h2>{title}</h2>}
+			{children}
+		</div>
+	);
+};
 
 export default WindowBox;
