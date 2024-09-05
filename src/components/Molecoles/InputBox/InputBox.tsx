@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction} from "react";
 import style from "./InputBox.module.scss";
 
 interface InputBoxProps {
@@ -13,7 +13,6 @@ const InputBox = (props: InputBoxProps) => {
 	return (
 		<div className={style.main}>
 			<h3>{label}</h3>
-			{/* controlled component */}
 			<input
 				value={value}
 				onChange={(e) => setValue(e.target.value)}

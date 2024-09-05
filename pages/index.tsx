@@ -1,5 +1,4 @@
 import Head from "next/head";
-import { Inter } from "next/font/google";
 import styles from "@/src/styles/Home.module.scss";
 import Header from "@/src/components/Molecoles/Header/Header";
 import WindowBox from "@/src/components/Organism/WindowBox";
@@ -13,20 +12,21 @@ import {
 	GoogleGenerativeAI,
 } from "@google/generative-ai";
 import SwitchBox from "@/src/components/Molecoles/SwitchBox/SwitchBox";
-
-const inter = Inter({ subsets: ["latin"] });
+import Toast from "@/src/components/Atoms/Toast/Toast";
 
 export default function Home() {
 	const [protagonista, setProtagonista] = useState("");
 	const [antagonista, setAntagonista] = useState("");
 	const [genere, setGenere] = useState("");
 	const [pegi18, setPegi18] = useState(false);
-
+	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [response, setResponse] = useState("");
+	const [isPlaying, setIsPlaying] = useState(false);
 
 	const handleGenerate = async () => {
 		setLoading(true);
+		setError(false);
 		const prompt = `genera un racconto ${genere} per ${
 			pegi18 ? "adulti" : "bambini"
 		}, con il protagonista chiamato ${protagonista} e l'antagonista chiamato ${antagonista}.`;
@@ -56,6 +56,23 @@ export default function Home() {
 		}
 		setLoading(false);
 	};
+
+	const handleVoice = () => {
+		const utterance = new SpeechSynthesisUtterance(response);
+		utterance.lang = "it-IT";
+		utterance.rate = 0.8; //scegliere la velocità di riproduzione
+		setIsPlaying(true);
+		speechSynthesis.speak(utterance);
+		utterance.onend = () => {
+			setIsPlaying(false);
+		};
+	};
+
+	const handleStopVoice = () => {
+		speechSynthesis.cancel();
+		setIsPlaying(false);
+	};
+
 	return (
 		<>
 			<Head>
@@ -67,6 +84,13 @@ export default function Home() {
 			<main className={styles.main}>
 				<Header title="AI Story Teller" />
 				<div className={styles.content}>
+					{error && (
+						<Toast
+							setAction={setError}
+							title="Errore"
+							message="Errore nella creazione del racconto"
+						/>
+					)}
 					<WindowBox title="Story Params">
 						<div className={styles.container}>
 							<InputBox
@@ -100,13 +124,22 @@ export default function Home() {
 								}
 							/>
 						</div>
-
-						{loading ? (
+						{loading && (
 							<div className={styles.loading}>
 								<p>loading...</p>
 							</div>
-						) : (
-							<div className={styles.result}>{response}</div>
+						)}
+						{!loading && response && (
+							<div className={styles.result}>
+								<div className={styles.btn}>
+									{isPlaying ? (
+										<Button label="Stop" onClick={handleStopVoice} />
+									) : (
+										<Button label="Racconta" onClick={handleVoice} />
+									)}
+								</div>
+								{response}
+							</div>
 						)}
 					</WindowBox>
 				</div>
